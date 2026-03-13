@@ -17,7 +17,37 @@ export default function Signup() {
   const [name, setName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
+  const [otp, setOtp] = useState("")
+  const [otpSent, setOtpSent] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
+
+  // SEND OTP
+  const sendOTP = async () => {
+
+    if (!email) {
+      toast.error("Enter email first")
+      return
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error("Invalid email format")
+      return
+    }
+
+    try {
+
+      await API.post("/auth/sendotp", {
+        email
+      })
+
+      toast.success("OTP sent to your email")
+      setOtpSent(true)
+
+    } catch (error) {
+      console.error(error)
+      toast.error("Failed to send OTP")
+    }
+  }
 
   // SIGNUP
   const handleSignup = async (e: any) => {
@@ -28,6 +58,15 @@ export default function Signup() {
       return
     }
 
+    if (!otpSent) {
+      toast.error("Please verify email with OTP")
+      return
+    }
+
+    if (!otp) {
+      toast.error("Enter OTP")
+      return
+    }
 
     if (password.length < 8) {
       toast.error("Password must be at least 8 characters")
@@ -37,17 +76,21 @@ export default function Signup() {
     setIsLoading(true)
 
     try {
-      // request an OTP for this email
-      await API.post("/auth/sendotp", { email });
 
-      // save info so verify page can complete registration
-      sessionStorage.setItem("signupData", JSON.stringify({ name, email, password }));
+      await API.post("/auth/signup", {
+        name,
+        email,
+        password,
+        otp
+      })
 
-      toast.success("OTP sent! Please check your email.");
-      navigate({ to: "/verify" });
+      toast.success("Signup successful! Redirecting to login...")
+      navigate({ to: "/login" })
+
     } catch (error) {
-      console.error("Signup error:", error);
-      toast.error("Failed to send OTP");
+      console.error("Signup error:", error)
+      toast.error("Signup failed")
+
     } finally {
       setIsLoading(false)
     }
@@ -80,6 +123,15 @@ export default function Signup() {
           disabled={isLoading}
         />
 
+        {/* SEND OTP BUTTON */}
+
+        <button
+          type="button"
+          onClick={sendOTP}
+          className="w-full bg-black text-white py-2 rounded-lg hover:bg-black transition"
+        >
+          Send OTP
+        </button>
 
         <input
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -90,6 +142,16 @@ export default function Signup() {
           disabled={isLoading}
         />
 
+        {/* OTP INPUT */}
+
+        {otpSent && (
+          <input
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+          />
+        )}
 
         <button
           className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-400 transition disabled:opacity-50"

@@ -111,7 +111,7 @@ export default function TodoItem({todo,onDelete,onToggle,onUpdate}:Props){
           </div>
         </div>
 
-        <div className="flex items-center space-x-2 ml-0 sm:ml-4 mt-4 sm:mt-0">
+        <div className="flex items-center space-x-2 ml-4">
           {isEditing ? (
             <button
               className="text-green-600 hover:text-green-800 font-semibold"

@@ -51,7 +51,6 @@ const routeTree = rootRoute.addChildren([
   homeRoute,
   loginRoute,
   signupRoute,
-  verifyRoute,
   dashboardRoute,
 ]);
 

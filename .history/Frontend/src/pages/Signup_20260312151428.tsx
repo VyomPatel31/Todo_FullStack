@@ -80,6 +80,15 @@ export default function Signup() {
           disabled={isLoading}
         />
 
+        {/* SEND OTP BUTTON */}
+
+        <button
+          type="button"
+          onClick={sendOTP}
+          className="w-full bg-black text-white py-2 rounded-lg hover:bg-black transition"
+        >
+          Send OTP
+        </button>
 
         <input
           className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
@@ -90,6 +99,16 @@ export default function Signup() {
           disabled={isLoading}
         />
 
+        {/* OTP INPUT */}
+
+        {otpSent && (
+          <input
+            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            placeholder="Enter OTP"
+            value={otp}
+            onChange={(e) => setOtp(e.target.value)}
+          />
+        )}
 
         <button
           className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-400 transition disabled:opacity-50"
